@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <body background="Village Path2.png">
+        <img id="background" src="Village Path2.png" style="position: fixed; left: 0px; top: 0px; z-index: -1000; width: 100%; height: 100%;">
+        <div id="character" style="position: absolute; top: 0px; left: 0px;">
+            <img src="New character.png" id="characterAsset" style="height: 150px; width: 150px;">
+        </div>
+        <img id="House" src="New Village House.png" style="width: 200px; height: 200px;">
+        <img id="Neighbors" src="Neighbors-removebg-preview.png" style="width: 720px; height: 200px; position: fixed; left: 220px;">
+        <script>
+            const character = document.getElementById("characterAsset");
+            const characterObject = document.getElementById("character");
+            const house = document.getElementById("House");
+            var speed = 10;
+            let keyPress = false;
+            let x = 0;
+            let y = 210;
+            characterObject.style.top = y + "px";
+            let interval;
+            function isColliding (element1, element2) {
+                const ele1 = element1.getBoundingClientRect();
+                const ele2 = element2.getBoundingClientRect();
+
+                return(
+                    ele1.left < ele2.right &&
+                    ele1.right > ele2.left &&
+                    ele1.top < ele2.bottom &&
+                    ele1.bottom > ele2.top
+                );
+            }
+            //Movement
+            document.addEventListener("keydown", (event) => {
+                console.log(event);
+                if (event.key.startsWith("Arrow")) {
+                            event.preventDefault();
+                            if(event.ctrlKey) {
+                                speed = 20; 
+                            }   else {
+                                speed = 10;
+                            }
+                        }
+                if (!keyPress){
+                        keyPress = true;
+                        if(event.key.startsWith("Arrow")) {
+                            character.src = "NC Frontwalk.gif";
+                        }
+                        interval = setInterval(() => {
+                if (event.key.startsWith("Arrow")) { 
+                    let ogY = y;
+                    let ogX = x;
+                    switch (event.key) {
+                            case "ArrowUp":
+                                y -= speed;
+                                break;
+                            case "ArrowDown":
+                                y += speed;
+                                break;
+                            case "ArrowLeft":
+                                x -= speed;
+                                break;
+                            case "ArrowRight":
+                                x += speed;
+                                break;
+                        }
+                        characterObject.style.top = y + "px";
+                        if (isColliding(characterObject, house)) {
+                            y = ogY;
+                            characterObject.style.top = y + "px";
+                        }
+                        characterObject.style.left = x + "px";
+                        if (isColliding(characterObject, house)) {
+                            x = ogX;
+                            characterObject.style.left = x + "px";
+                        }
+                    }
+                }, 50);
+                }
+            }); //end
+            //stop animation
+            document.addEventListener("keyup", event => {
+                character.src = "New character.png";
+                keyPress = false;
+                speed = 10;
+                clearInterval(interval);
+            }); //end
+            //RPG_Character.png
+        </script>
+    </body>
+</html>
